@@ -2,10 +2,10 @@
 
 ## BADGES/License🔖
 ---
-[Heroku Link](https://note-me-up.herokuapp.com)
+
 
 ## Deployment Link
-[![Heroku Link](https://note-me-up.herokuapp.com)
+[Heroku Link](https://note-me-up.herokuapp.com)
 ## Description 📖
 ---
 > This application allows us to be able to write and save notes. Overall functionality works
