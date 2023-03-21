@@ -1,10 +1,10 @@
 const express = require("express");
 
-// modular routes
-const routerNote = require("./note");
+// import modular routers
+const routerNotes = require("./note");
 
 const app = express();
 
-app.use("./note", routerNote);
+app.use("/notes", routerNotes);
 
 module.exports = app;

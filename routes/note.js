@@ -1,49 +1,78 @@
-const express = require("express");
+const notes = require("express").Router();
 const { v4: uuidv4 } = require("uuid");
-const fs = require("fs").promises;
-
-const note = express.Router();
-
-//USE async and await for fs instead of promises
+const {
+  readFromFile,
+  readAndAppend,
+  writeToFile,
+} = require("../helpers/fsUtils");
 
 // GET route for retrieving all the notes
-note.get("/", async (req, res) => {
-  try {
-    console.info(`${req.method} request received for notes`);
-    const data = await fs.readFile("./db/db.json");
-    res.json(JSON.parse(data));
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Internal server error");
-  }
+notes.get("/", (req, res) => {
+  console.info(`${req.method} request received for notes`);
+  readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)));
 });
 
 // POST route for a new note
-note.post("/", async (req, res) => {
-  try {
-    console.info(`${req.method} request received to add a note`);
-    const { title, text } = req.body;
+notes.post("/", (req, res) => {
+  console.info(`${req.method} request received to add a note`);
 
-    if (!title || !text) {
-      res.status(400).send("Bad request: missing title or text");
-      return;
-    }
+  const { title, text } = req.body;
 
+  if (req.body) {
     const newNote = {
       title,
       text,
       note_id: uuidv4(),
     };
 
-    const data = await fs.readFile("./db/db.json");
-    const note = JSON.parse(data);
-    note.push(newNote);
-    await fs.writeFile("./db/db.json", JSON.stringify(note));
+    readAndAppend(newNote, "./db/db.json");
     res.json("Note added successfully");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Internal server error");
+  } else {
+    res.error("Error in adding note");
   }
 });
 
-module.exports = note;
+// DELETE route for a specific note
+notes.delete("/:note_id", (req, res) => {
+  const noteId = req.params.note_id;
+  console.log(`req paramsid ${req.params.note_id}`);
+  console.log(noteId);
+  console.log(`DELETE note route called with id ${noteId}`);
+  readFromFile("./db/db.json")
+    .then((data) => JSON.parse(data))
+    .then((json) => {
+      // Make a new array of all notes except the one with the ID provided in the URL
+      const newNoteArray = json.filter(
+        (note) => note.note_id !== String(noteId)
+      );
+
+      // Save that array to the filesystem
+      writeToFile("./db/db.json", newNoteArray);
+
+      // Respond to the DELETE request
+      res.json(`Item ${noteId} has been deleted 🗑️`);
+    });
+});
+
+// delete route for a specific note
+notes.delete("/:note_id", (req, res) => {
+  const noteId = req.params.note_id;
+  console.log(`DELETE note route called with id ${noteId}`);
+  readFromFile("./db/db.json")
+    .then((data) => JSON.parse(data))
+    .then((json) => {
+      // Make a new array of all notes except the one with the ID provided in the URL
+      const newNoteArray = json.filter(
+        (note) => note.note_id !== String(noteId)
+      );
+
+      // Save that array to the filesystem
+      writeToFile("./db/db.json", newNoteArray);
+
+      // Respond to the DELETE request
+
+      res.json(`Item ${noteId} has been deleted 🗑️`);
+    });
+});
+
+module.exports = notes;
