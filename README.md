@@ -2,13 +2,14 @@
 
 ## BADGES/License🔖
 ---
-[![MIT License](https://img.shields.io/badge/License-MIT%20License-orange)](https://opensource.org/license/mit/)
+[Heroku Link](https://note-me-up.herokuapp.com)
 
 ## Deployment Link
 [![Heroku Link](https://note-me-up.herokuapp.com)
 ## Description 📖
 ---
-> This application allows us to be able to write and save notes
+> This application allows us to be able to write and save notes. Overall functionality works
+> for future development, delete button not recognizing the note_id. but logic makes sense
 ## Installation ⚙️
 ---
 
